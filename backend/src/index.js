@@ -13,11 +13,12 @@ const app = express();
 const port = process.env.PORT || 5001;
 
 app.use(express.json());
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL,
-  })
-);
+const corsOptions = {
+  origin: process.env.FRONTEND_URL,
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+app.use(cors(corsOptions));
 
 // データベースからデータを全取得
 app.get("/getdata", (req, res) => getData(client, req, res));
