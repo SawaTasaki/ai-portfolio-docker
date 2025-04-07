@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import dotenv from "dotenv";
+dotenv.config();
 
 import { PlateConfigProps, AiToolProps } from "./props";
 import Button from "../components/Button";
@@ -31,7 +33,7 @@ const SetData: React.FC = () => {
   useEffect(() => {
     async function fetchAiTools() {
       try {
-        const response = await fetch("http://localhost:5000/getdata", {
+        const response = await fetch(`${process.env.BACKEND_URL}/getdata`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -209,7 +211,7 @@ const SetData: React.FC = () => {
     e.preventDefault(); // フォーム送信によるページリロードを防ぐ
 
     if (newCard.tool_name && newCard.company) {
-      fetch("http://localhost:5000/adddata", {
+      fetch(`${process.env.BACKEND_URL}/adddata`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

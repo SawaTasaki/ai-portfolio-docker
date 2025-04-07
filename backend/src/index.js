@@ -15,7 +15,7 @@ const port = process.env.PORT || 5001;
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.FRONTEND_URL,
   })
 );
 
@@ -32,9 +32,9 @@ app.post('/adddata', (req, res) => postData(client, req, res));
 // app.post('/signin', (req, res) => signin(client, req, res));
 
 app.get("/", (req, res) => {
-  return res.send(`サーバーが http://localhost:${port} で稼働しています`);
+  return res.send(`サーバーが PORT ${port} で稼働しています`);
 });
 
 app.listen(port, () => {
-  console.log(`サーバーが http://localhost:${port} で稼働しています`);
+  console.log(`サーバーが PORT ${port} で稼働しています`);
 });

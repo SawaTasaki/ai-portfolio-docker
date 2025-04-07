@@ -1,0 +1,33 @@
+services:
+
+  # backend
+  - type: web
+    name: sample_app_backend
+    plan: free
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    envVars:
+      - key: PORT
+        value: ${PORT}
+      - key: DB_HOST
+        value: ${DB_HOST}
+      - key: DB_PORT
+        value: ${DB_PORT}
+      - key: DB_USER
+        value: ${DB_USER}
+      - key: DB_PASSWORD
+        value: ${DB_PASSWORD}
+      - key: DB_NAME
+        value: ${DB_NAME}
+      - key: FRONTEND_URL
+        value: ${FRONTEND_URL}
+
+  # frontend
+  - type: web
+    name: sample_app_frontend
+    plan: free
+    runtime: docker
+    dockerfilePath: ./frontend/Dockerfile
+    envVars:
+      - key: BACKEND_URL
+        value: ${BACKEND_URL}
