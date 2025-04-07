@@ -31,3 +31,5 @@ services:
     envVars:
       - key: BACKEND_URL
         value: ${BACKEND_URL}
+      - key: FRONTEND_URL
+        value: ${FRONTEND_URL}
