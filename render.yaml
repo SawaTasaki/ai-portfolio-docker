@@ -29,7 +29,7 @@ services:
     runtime: docker
     dockerfilePath: ./frontend/Dockerfile
     envVars:
-      - key: BACKEND_URL
-        value: ${BACKEND_URL}
-      - key: FRONTEND_URL
-        value: ${FRONTEND_URL}
+      - key: VITE_BACKEND_URL
+        value: ${VITE_BACKEND_URL}
+      - key: VITE_FRONTEND_URL
+        value: ${VITE_FRONTEND_URL}

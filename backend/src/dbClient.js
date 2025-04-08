@@ -37,19 +37,18 @@ const insertDataQuery = `
 // users テーブルの作成
 const createUsersTableQuery = `
   CREATE TABLE IF NOT EXISTS users (
-      id SERIAL PRIMARY KEY,
-      email VARCHAR(255) NOT NULL UNIQUE,
-      password VARCHAR(255) NOT NULL,
-      favorite_tools INTEGER[]  -- 使用ツールのリスト（最大25個まで）
-  );
+    id SERIAL PRIMARY KEY,
+    ip_address VARCHAR(45),
+    tools INT[]
+);
 `;
 
 // 初期データの挿入
 const insertUsersDataQuery = `
-  INSERT INTO users (email, password, favorite_tools) VALUES
-  ('user1@example.com', 'password123', ARRAY[1, 2]),
-  ('user2@example.com', 'password123', ARRAY[3, 4]),
-  ('user3@example.com', 'password123', ARRAY[5, 6, 1]);
+  INSERT INTO users (ip_address, tools) VALUES 
+('203.0.113.1', ARRAY[1, 2]),
+('203.0.113.2', ARRAY[3, 4]),
+('203.0.113.3', ARRAY[5, 6]);
 `;
 
 try {
@@ -79,7 +78,6 @@ try {
   console.log("ai_toolsテーブルのデータ:", result1.rows);
   const result2 = await client.query("SELECT * FROM users");
   console.log("usersテーブルのデータ:", result2.rows);
-
 } catch (err) {
   console.error("エラーが発生しました:", err);
 }
