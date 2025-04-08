@@ -10,6 +10,9 @@ services:
       - "3000:5173"
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - VITE_BACKEND_URL=${VITE_BACKEND_URL}
+    env_file:
+      - .env
 
   # バックエンド: Node.js (Express)
   backend:
@@ -26,11 +29,14 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
+      - PORT=${PORT}
+      - FRONTEND_URL=${FRONTEND_URL}
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy # postgres がちゃんと起動したら start
-    env_file:
-      - .env
+  
 
   # データベース: PostgreSQL
   db:

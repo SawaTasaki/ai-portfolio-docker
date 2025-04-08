@@ -30,8 +30,10 @@ const SetData: React.FC = () => {
   // 初回データ取得
   useEffect(() => {
     async function fetchAiTools() {
+      console.log("バックエンドURL:", import.meta.env.VITE_BACKEND_URL);
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
       try {
-        const response = await fetch("http://localhost:5000/getdata", {
+        const response = await fetch(`${backendUrl}/getdata`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -209,7 +211,8 @@ const SetData: React.FC = () => {
     e.preventDefault(); // フォーム送信によるページリロードを防ぐ
 
     if (newCard.tool_name && newCard.company) {
-      fetch("http://localhost:5000/adddata", {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      fetch(`${backendUrl}/adddata`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
