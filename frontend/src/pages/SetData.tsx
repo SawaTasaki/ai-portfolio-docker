@@ -30,7 +30,6 @@ const SetData: React.FC = () => {
   // 初回データ取得
   useEffect(() => {
     async function fetchAiTools() {
-      console.log("バックエンドURL:", import.meta.env.VITE_BACKEND_URL);
       const backendUrl = import.meta.env.VITE_BACKEND_URL;
       try {
         const response = await fetch(`${backendUrl}/getdata`, {
@@ -40,12 +39,12 @@ const SetData: React.FC = () => {
           },
         });
         if (!response.ok) {
-          throw new Error("ファイルが見つかりませんでした…。");
+          showMessage("データの取得に失敗しました。リロードしてみてください。");
         }
         const data: AiToolProps[] = await response.json();
         setAvailableCards(data || []);
       } catch (error) {
-        console.error("データの取得に失敗してしまいました…。", error);
+        showMessage("予期せぬエラーが起こりました。リロードしてみてください。");
       }
     }
     fetchAiTools();
@@ -159,6 +158,31 @@ const SetData: React.FC = () => {
     showMessage("ローカルストレージを削除しました！");
   };
 
+  // データベースに保存
+  const handleSaveDatabase = async () => {
+    console.log("plateCardsのデータ:", plateCards);
+    const toolIds = plateCards
+    .filter((card: AiToolProps) => card !== null && card !== undefined)
+    .filter((card: AiToolProps) => card.ai_tool_id >= 0)
+    .map((card: AiToolProps) => card.ai_tool_id);
+    console.log("フィルターされたtoolIdsのデータ:", toolIds);
+
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    try {
+      await fetch(`${backendUrl}/savedata`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tools: toolIds,
+        }),
+      });
+    } catch (error) {
+      console.log("ユーザーには関係ないですが、開発者にとっては困ったエラーです。")
+    }
+  }
+
   // ローカルストレージに保存
   const handleSaveLocalStorage = () => {
     const state = {
@@ -169,6 +193,7 @@ const SetData: React.FC = () => {
     };
     localStorage.setItem("appState", JSON.stringify(state));
     showMessage("ローカルストレージに保存しました！");
+    handleSaveDatabase();
   };
 
   // ローカルストレージから復元
@@ -207,12 +232,12 @@ const SetData: React.FC = () => {
   };
 
   // 新しいカードをデータベースに追加する
-  const handleAddCardToDB = (e: React.FormEvent) => {
-    e.preventDefault(); // フォーム送信によるページリロードを防ぐ
+  const handleAddCardToDB = async (e: React.FormEvent) => {
+    e.preventDefault();
 
     if (newCard.tool_name && newCard.company) {
       const backendUrl = import.meta.env.VITE_BACKEND_URL;
-      fetch(`${backendUrl}/adddata`, {
+      const response = await fetch(`${backendUrl}/adddata`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -222,40 +247,34 @@ const SetData: React.FC = () => {
           company: newCard.company,
         }),
       })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.ai_tool_id) {
-            setAvailableCards([...availableCards, data]); // リロードしなくても追加したカードを表示できるようにする
-            setNewCard({ tool_name: "", company: "" });
-            showMessage("カードがDBに追加されました！");
-            console.log("カードがDBに追加されました：", [...availableCards, data]);
-          } else {
-            console.error("カード追加に失敗しました。");
-            showMessage("カードの追加に失敗しました。もう一度試してください。");
-          }
-        })
-        .catch((error) => {
-          console.error("エラーが発生しました：", error);
-        });
+      if (!response.ok) {
+        showMessage("カードの追加に失敗しました。もう一度試してください。");
+        return;
+      }
+      const data = await response.json();
+      setAvailableCards([...availableCards, data]);
+      setNewCard({ tool_name: "", company: "" });
+      showMessage("カードがDBに追加されました！");
     } else {
       showMessage("ツール名と提供企業名を両方入力してください");
     }
   };
-  
+
   // 新しいカードをローカルに追加する
   const handleAddCardtoLocal = (e: React.FormEvent) => {
-    e.preventDefault(); // フォーム送信によるページリロードを防ぐ
+    e.preventDefault();
 
     if (newCard.tool_name && newCard.company) {
       const newCardData: AiToolProps = {
-        ai_tool_id: (availableCards.length)*-1,
+        ai_tool_id: availableCards.length * -1,
         tool_name: newCard.tool_name,
         company: newCard.company,
       };
       setAvailableCards([...availableCards, newCardData]);
       setNewCard({ tool_name: "", company: "" });
-      showMessage("カードがローカルに追加されました！（画面をリロードすると消えます）");
-      console.log("カードがローカルに追加されました：", [...availableCards, newCardData]);
+      showMessage(
+        "カードがローカルに追加されました！（画面をリロードすると消えます）"
+      );
     } else {
       showMessage("ツール名と提供企業名を両方入力してください");
     }
