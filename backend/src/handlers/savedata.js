@@ -1,5 +1,11 @@
 const saveData = async (client, req, res) => {
-  const ip_address = req.ip;
+  // const ip_address = req.ip;
+  
+  // X-Forwarded-For ヘッダーからIPを取得
+  const xip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  // X-Forwarded-Forには複数のIPアドレスがカンマ区切りで含まれている場合があるので最初のIPを取得
+  const ip_address = xip.split(',')[0];
+
   const { tools } = req.body;
 
   try {
