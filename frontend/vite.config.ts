@@ -6,6 +6,6 @@ export default defineConfig({
   plugins: [react()],
   // render.yaml用の設定
   server: {
-    allowedHosts: [import.meta.env.VITE_FRONTEND_URL],
+    allowedHosts: ["https://sample-app-frontend.onrender.com"],
   }
 });
