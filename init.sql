@@ -18,8 +18,7 @@ INSERT INTO ai_tools (tool_name, company) VALUES
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     ip_address VARCHAR(45),
-    tools INT[],  -- ai_tool_id の配列（外部キー）
-    CONSTRAINT fk_tools FOREIGN KEY (tools) REFERENCES ai_tools(ai_tool_id) 
+    tools INT[]
 );
 
 -- 初期データの挿入
