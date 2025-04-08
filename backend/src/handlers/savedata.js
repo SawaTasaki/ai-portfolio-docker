@@ -1,7 +1,6 @@
 const saveData = async (client, req, res) => {
   const ip_address = req.ip;
   const { tools } = req.body;
-  console.log("eee", ip_address, tools);
 
   try {
     const result = await client.query(
@@ -11,8 +10,8 @@ const saveData = async (client, req, res) => {
 
     return res.status(201).json(result.rows[0]);
   } catch (err) {
-    console.error('ユーザーデータ保存中のエラー:', err.stack);
-    return res.status(500).json({ error: 'ユーザーデータの保存中にエラーが発生しました。' });
+    console.error(err);
+    return res.status(500).json({ error: "内部サーバーエラー" });
   }
 };
 
